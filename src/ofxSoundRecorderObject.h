@@ -51,6 +51,10 @@ public:
 	ofEvent<std::string> recordingEndEvent;
 	
 	float getRecordingElapsedTime();
+
+	void forceOneChannel(bool force) {
+		bForceOneChannel = force;
+	}
 	
 protected:
 	
@@ -81,5 +85,5 @@ private:
 	ofSoundBuffer recordingBuffer, internalRecordingBuffer;
 	
 	bool bRecordToRam = false;
-	
+	bool bForceOneChannel = false;
 };

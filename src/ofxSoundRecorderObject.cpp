@@ -33,7 +33,7 @@ void ofxSoundRecorderObject::write(ofSoundBuffer& input){
 		drwav_data_format format;
 		format.container = drwav_container_riff;
 		format.format = DR_WAVE_FORMAT_IEEE_FLOAT;   
-		format.channels = input.getNumChannels();
+		format.channels = bForceOneChannel?1:input.getNumChannels();
 		format.sampleRate = input.getSampleRate();
 		format.bitsPerSample = 32;
 		
@@ -46,8 +46,8 @@ void ofxSoundRecorderObject::write(ofSoundBuffer& input){
 		wav_handle = drwav_open_file_write( filenameBuffer.c_str(), &format);
 //		input.copyTo(internalRecordingBuffer);
 		internalRecordingBuffer = input;
-		cout << "input.getNumChannels : " << input.getNumChannels() <<endl;
-		cout << "internalRecordingBuffer.getNumChannels : " << internalRecordingBuffer.getNumChannels() <<endl;
+		ofLogVerbose("ofxSoundRecorderObject") << "input.getNumChannels : " << input.getNumChannels() <<endl;
+		ofLogVerbose("ofxSoundRecorderObject") << "internalRecordingBuffer.getNumChannels : " << internalRecordingBuffer.getNumChannels() <<endl;
 	}else if(recState == DEINIT_REC){
 		ofLogVerbose("ofxSoundRecorderObject::process") << "finished recording file " << filenameBuffer;
 		drwav_uninit(wav_handle);
