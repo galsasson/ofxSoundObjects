@@ -43,8 +43,10 @@ ofxSoundObject* ofxSoundMixer::getChannelSource(int channelNumber){
 void ofxSoundMixer::disconnectInput(ofxSoundObject * input){
     for (int i =0; i<connections.size(); i++) {
         if (input == connections[i]) {
+            mutex.lock();
             connections.erase(connections.begin() + i);
             connectionVolume.erase(connectionVolume.begin() + i);
+            mutex.unlock();
             break;
         }
     }
@@ -57,8 +59,10 @@ void ofxSoundMixer::setInput(ofxSoundObject *obj){
             return;
         }
     }
+    mutex.lock();
     connections.push_back(obj);
     connectionVolume.push_back(1);//default volume for channel is 1
+    mutex.unlock();
 }
 //----------------------------------------------------
 size_t ofxSoundMixer::getNumChannels(){
@@ -121,6 +125,7 @@ float ofxSoundMixer::getConnectionVolume(int channelNumber){
 //----------------------------------------------------
 // this pulls the audio through from earlier links in the chain and sums up the total output
 void ofxSoundMixer::audioOut(ofSoundBuffer &output) {
+    mutex.lock();
     if(connections.size()>0) {
 		output.set(0);//clears the output buffer as its memory might come with junk
         for(int i = 0; i < connections.size(); i++){
@@ -142,5 +147,6 @@ void ofxSoundMixer::audioOut(ofSoundBuffer &output) {
         }*/
         output*=masterVolume;
     }
+    mutex.unlock();
 }
 //----------------------------------------------------
